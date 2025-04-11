@@ -18,7 +18,7 @@
 
         public void MarkTodayComplete()
         {
-            LastCompletedDate = DateTime.Today;
+            LastCompletedDate = DateTime.Now;
         }
 
         public void SetNewName(string newName)

@@ -23,6 +23,11 @@ namespace HabbitStreak.Views
             await Navigation.PopAsync();
         }
 
+        private async void OnBackClicked(object sender, EventArgs e)
+        {
+            await Navigation.PopAsync();
+        }
+
         private void OnEditClicked(object sender, EventArgs e)
         {
             NameEntry.IsReadOnly = false;

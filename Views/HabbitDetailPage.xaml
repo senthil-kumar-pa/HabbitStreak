@@ -21,5 +21,8 @@
 
         <Button Text="Mark as Completed"
                 Clicked="OnMarkCompletedClicked" />
+
+        <Button Text="Back"
+        Clicked="OnBackClicked" />
     </StackLayout>
 </ContentPage>

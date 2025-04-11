@@ -1,0 +1,51 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:HabbitStreak.ViewModels"
+             xmlns:models="clr-namespace:HabbitStreak.Models"
+             x:Class="HabbitStreak.Views.MainPage"
+             x:DataType="vm:MainViewModel">
+
+    <ContentPage.BindingContext>
+        <vm:MainViewModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <Entry x:Name="HabbitEntry"
+               Placeholder="Enter new habit"
+               Text="{Binding NewHabbitName, Mode=TwoWay}" />
+
+        <Button Text="Add"
+                Command="{Binding AddHabbitCommand}" 
+                 CommandParameter="{Binding Text, Source={x:Reference HabbitEntry}}" />
+
+        <Label Text="Your Habits:"
+               FontAttributes="Bold"
+               FontSize="20"
+               Margin="0,10,0,0" />
+
+        <CollectionView ItemsSource="{Binding Habbits}" x:Name="mCollectionView" 
+                        VerticalOptions="Fill" 
+                        SelectionMode="Single"
+                        SelectionChanged="OnHabbitSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate  x:DataType="models:Habbit">
+                    <Grid Padding="10" Margin="5"
+                          ColumnDefinitions="2*,1.2*,Auto"
+                          BackgroundColor="Purple"
+                          VerticalOptions="Center">
+                        <Label Grid.Column="0"
+                           Text="{Binding Name}"
+                           FontSize="18"
+                           VerticalOptions="Center" />
+                        <Label Grid.Column="1"
+                           Text="{Binding LastCompletedDate, StringFormat='Last: {0:MM/dd/yyyy HH:mm:ss}'}"
+                           VerticalOptions="Center"
+                           FontSize="14"
+                           TextColor="Gray" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>

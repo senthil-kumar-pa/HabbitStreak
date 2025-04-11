@@ -1,0 +1,25 @@
+﻿<ContentPage  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HabbitStreak.Views.HabbitDetailPage"
+             Title="Habbit Details">
+    <StackLayout Padding="20" Spacing="20">
+        <Label Text="Habbit Name" FontSize="Medium" />
+        <Entry x:Name="NameEntry"
+               Text="{Binding Name}"
+               IsReadOnly="True"
+               FontSize="Large" />
+
+        <Label Text="{Binding LastCompletedDate, StringFormat='Last Completed: {0:MM/dd/yyyy}'}"
+               FontSize="Medium" />
+
+        <Button Text="Edit"
+                Clicked="OnEditClicked" />
+
+        <Button Text="Save"
+                IsVisible="False"
+                Clicked="OnSaveClicked" />
+
+        <Button Text="Mark as Completed"
+                Clicked="OnMarkCompletedClicked" />
+    </StackLayout>
+</ContentPage>

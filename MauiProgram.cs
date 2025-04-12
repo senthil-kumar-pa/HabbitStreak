@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using HabbitStreak.Services.HabitStreak.Services;
+using Microsoft.Extensions.Logging;
 
 namespace HabbitStreak;
 
@@ -7,6 +8,9 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+
+        builder.Services.AddSingleton<NavigationService>();
+
         builder
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>

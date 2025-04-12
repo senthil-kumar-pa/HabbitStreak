@@ -1,15 +1,24 @@
 ﻿using System.Diagnostics;
 using HabbitStreak.Models;
+using HabbitStreak.Services;
+using HabbitStreak.States;
 using HabbitStreak.ViewModels;
 
 namespace HabbitStreak.Views
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage : ContentPage, IUserDialogService
     {
         public MainPage()
         {
             InitializeComponent();
+            BindingContext = new MainViewModel(this);
         }
+
+        public Task ShowAlertAsync(string title, string message, string cancel)
+        {
+            return DisplayAlert(title, message, cancel);
+        }
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
@@ -18,7 +27,7 @@ namespace HabbitStreak.Views
             {
                 await vm.LoadHabbitsAsync();
             }
-
+            mCollectionView.SelectedItem = null;
             //PrintVisualTree(this, 0);
         }
 
@@ -63,18 +72,15 @@ namespace HabbitStreak.Views
             var collectionView = sender as CollectionView;
             if (e.CurrentSelection != null && e.CurrentSelection.Count > 0)
             {
+
                 var selectedHabbit = e.CurrentSelection[0] as Habbit;
                 if (selectedHabbit != null)
                 {
-                    // Navigate to the detail page, passing the selected Habbit
-                    await Navigation.PushAsync(new HabbitDetailPage(selectedHabbit));
-
-                    // Clear the selection
-                    collectionView.SelectedItem = null;
+                    HabbitState.SelectedHabbit = selectedHabbit;
+                    await Shell.Current.GoToAsync(nameof(HabbitDetailPage));
                 }
             }
         }
-
     }
 }
 

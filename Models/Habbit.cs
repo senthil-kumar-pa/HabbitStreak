@@ -2,19 +2,14 @@
 {
     using System.Text.Json.Serialization;
 
-    public class Habbit
+    [method: JsonConstructor]
+    public class Habbit(Guid id, string name, string description, DateTime createdDate, DateTime? lastCompletedDate = null)
     {
-        public string Name { get; private set; }
-        public DateTime CreatedDate { get; }
-        public DateTime? LastCompletedDate { get; private set; }
-
-        [JsonConstructor]
-        public Habbit(string name, DateTime createdDate, DateTime? lastCompletedDate = null)
-        {
-            Name = name;
-            CreatedDate = createdDate;
-            LastCompletedDate = lastCompletedDate;
-        }
+        public Guid Id { get; private set; } = id;
+        public string Name { get; private set; } = name;
+        public string Description { get; private set; } = description;
+        public DateTime CreatedDate { get; } = createdDate;
+        public DateTime? LastCompletedDate { get; private set; } = lastCompletedDate;
 
         public void MarkTodayComplete()
         {
@@ -25,7 +20,10 @@
         {
             Name = newName;
         }
+
+        public void SetNewDescription(string newDescription)
+        {
+            Description = newDescription;
+        }
     }
-
-
 }

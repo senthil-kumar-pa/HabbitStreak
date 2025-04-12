@@ -84,7 +84,11 @@ namespace HabbitStreak.Services
 
         public async Task SaveHabbitsAsync(List<Habbit> habbits)
         {
-            string json = JsonSerializer.Serialize(habbits);
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            string json = JsonSerializer.Serialize(habbits, options);
             await File.WriteAllTextAsync(_filePath, json);
         }
 
@@ -99,13 +103,14 @@ namespace HabbitStreak.Services
             }
         }
 
-        public async Task UpdateHabbitAsync(Habbit updatedHabbit, string newName)
+        public async Task UpdateHabbitAsync(Habbit updatedHabbit, string newName, string newDescription)
         {
             var habbits = await LoadHabbitsAsync();
-            var index = habbits.FindIndex(h => h.Name.Equals(updatedHabbit.Name, StringComparison.OrdinalIgnoreCase));
+            var index = habbits.FindIndex(h => h.Id.Equals(updatedHabbit.Id));
             if (index >= 0)
             {
                 updatedHabbit.SetNewName(newName);
+                updatedHabbit.SetNewDescription(newDescription);
                 habbits[index] = updatedHabbit;
                 await SaveHabbitsAsync(habbits);
             }

@@ -7,18 +7,28 @@ namespace HabbitStreak.ViewModels
 {
     public partial class MainViewModel : BaseViewModel
     {
-        //private readonly HabbitService _HabbitService = new();
+        private readonly IUserDialogService _dialogService;
         public ObservableCollection<Habbit> Habbits { get; } = new();
-
+        private ObservableCollection<Habbit> _filteredHabbits;
         public ICommand AddHabbitCommand { get; }
         public ICommand MarkCompleteCommand { get; }
 
-        public MainViewModel()
+        public MainViewModel(IUserDialogService dialogService)
         {
-            AddHabbitCommand = new Command(() =>
+            _dialogService = dialogService;
+            _filteredHabbits = Habbits;
+            AddHabbitCommand = new Command(async () =>
             {
                 if (!string.IsNullOrWhiteSpace(NewHabbitName))
-                    AddHabbit(NewHabbitName, 0);
+                {
+                    bool exists = await HabbitService.Instance.HabbitExistsAsync(NewHabbitName);
+                    if (exists)
+                    {
+                        await _dialogService.ShowAlertAsync("Duplicate Habbit", $"A habbit named '{NewHabbitName}' already exists.", "OK");
+                        return;
+                    }
+                    AddHabbit(NewHabbitName, Description, 0);
+                }
             });
 
             MarkCompleteCommand = new Command<Habbit>(async Habbit =>
@@ -45,16 +55,67 @@ namespace HabbitStreak.ViewModels
             }
         }
 
+        private string? newDescription;
+
+        public string Description
+        {
+            get => newDescription ?? "";
+            set
+            {
+                if (newDescription != value)
+                {
+                    newDescription = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public ObservableCollection<Habbit> FilteredHabbits
+        {
+            get => _filteredHabbits;
+            set
+            {
+                _filteredHabbits = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _filterText;
+        public string FilterText
+        {
+            get => _filterText;
+            set
+            {
+                _filterText = value;
+                OnPropertyChanged();
+                ApplyFilter();
+            }
+        }
+
+        private void ApplyFilter()
+        {
+            if (string.IsNullOrWhiteSpace(FilterText))
+            {
+                FilteredHabbits = new ObservableCollection<Habbit>(Habbits);
+            }
+            else
+            {
+                FilteredHabbits = new ObservableCollection<Habbit>(
+                    Habbits.Where(item => item.Name.ToLower().Contains(FilterText.ToLower())));
+            }
+        }
         public async Task LoadHabbitsAsync()
         {
             var loaded = await HabbitService.Instance.LoadHabbitsAsync();
             Habbits.Clear();
             foreach (var h in loaded) Habbits.Add(h);
+
+            _filteredHabbits = new ObservableCollection<Habbit>(Habbits);
         }
 
-        private void AddHabbit(string name, int streakCount)
+        private void AddHabbit(string name, string description, int streakCount)
         {
-            Habbits.Add(new Habbit(name, DateTime.Today));
+            Habbits.Add(new Habbit(Guid.NewGuid(), name, description, DateTime.Today));
             _ = HabbitService.Instance.SaveHabbitsAsync([.. Habbits]);
         }
     }

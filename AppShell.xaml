@@ -3,13 +3,15 @@
     x:Class="HabbitStreak.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:HabbitStreak.Views"
-    Shell.FlyoutBehavior="Flyout"
+    xmlns:views="clr-namespace:HabbitStreak.Views"
     Title="HabbitStreak">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <!-- Home Page -->
+    <FlyoutItem Title="Home" Route="MainPage">
+        <ShellContent Title="Home" ContentTemplate="{DataTemplate views:MainPage}" />
+    </FlyoutItem>
 
+    <MenuItem 
+    Text="Settings" 
+    Clicked="OnSettingsClicked" />
 </Shell>

@@ -5,9 +5,9 @@
              x:Class="HabbitStreak.Views.MainPage"
              x:DataType="vm:MainViewModel">
 
-    <ContentPage.BindingContext>
+    <!--<ContentPage.BindingContext>
         <vm:MainViewModel />
-    </ContentPage.BindingContext>
+    </ContentPage.BindingContext>-->
 
     <Grid RowDefinitions="Auto, Auto, Auto, Auto, *"
           Padding="20" RowSpacing="15">
@@ -20,7 +20,7 @@
         <Button Grid.Row="1"
                 Text="Add"
                 Command="{Binding AddHabbitCommand}"
-                CommandParameter="{Binding Text, Source={x:Reference HabbitEntry}}" />
+                CommandParameter="{Binding Source={x:Reference HabbitEntry}, Path=Text}" />
 
         <Label Grid.Row="2"
                Text="Your Habits:"
@@ -28,13 +28,20 @@
                FontSize="20"
                Margin="0,10,0,0" />
 
+        <Entry Grid.Row="3" Placeholder="Type to filter..."
+                Text="{Binding FilterText, Mode=TwoWay}" 
+                FontAttributes="Bold"
+                FontSize="20"
+                Margin="0,10,0,0"/>
+        
         <CollectionView Grid.Row="4"
-                        ItemsSource="{Binding Habbits}"
+                        ItemsSource="{Binding FilteredHabbits}"
                         x:Name="mCollectionView"
                         VerticalOptions="Fill"
                         SelectionMode="Single"
                         SelectionChanged="OnHabbitSelected"
-                        BackgroundColor="MediumPurple">
+                        BackgroundColor="MediumPurple"
+                        >
 
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
@@ -53,8 +60,12 @@
                                    FontSize="20"
                                    FontAttributes="Bold"
                                    TextColor="FloralWhite" />
-                            <Label Text="{Binding LastCompletedDate, StringFormat='Last Completed: {0:MMM dd, yyyy HH:mm}'}"
+                            <Label Text="{Binding Description}"
                                    FontSize="14"
+                                   FontAttributes="Italic"
+                                   TextColor="FloralWhite" />
+                            <Label Text="{Binding LastCompletedDate, StringFormat='Last Completed: {0:MMM dd, yyyy HH:mm}'}"
+                                   FontSize="12"
                                    TextColor="NavajoWhite" />
                         </VerticalStackLayout>
                     </Border>

@@ -1,72 +1,29 @@
-﻿using HabbitStreak.Models;
-using HabbitStreak.Services;
+﻿using HabbitStreak.Services;
+using HabbitStreak.Services.HabitStreak.Services;
+using HabbitStreak.States;
+using HabbitStreak.ViewModels;
 
 namespace HabbitStreak.Views
 {
-    public partial class HabbitDetailPage : ContentPage
+    public partial class HabbitDetailPage : ContentPage, IUserDialogService
     {
-        private Habbit _originalHabbit;
-        private string _originalName;
-
-        public HabbitDetailPage(Habbit habbit)
+        private readonly NavigationService _navigationService;
+        public HabbitDetailPage(NavigationService navigationService)
         {
             InitializeComponent();
-            _originalHabbit = habbit;
-            _originalName = habbit.Name;
-            BindingContext = _originalHabbit;
+            _navigationService = navigationService;
+            BindingContext = new HabbitDetailViewModel(this, _navigationService);
         }
 
-        private async void OnMarkCompletedClicked(object sender, EventArgs e)
+        public Task ShowAlertAsync(string title, string message, string cancel)
         {
-            _originalHabbit.MarkTodayComplete();
-            await HabbitService.Instance.UpdateHabbitAsync(_originalHabbit);
-            await Navigation.PopAsync();
+            return DisplayAlert(title, message, cancel);
         }
 
-        private async void OnBackClicked(object sender, EventArgs e)
+        protected override void OnDisappearing()
         {
-            await Navigation.PopAsync();
-        }
-
-        private void OnEditClicked(object sender, EventArgs e)
-        {
-            NameEntry.IsReadOnly = false;
-            NameEntry.Focus();
-            NameEntry.SelectionLength = NameEntry.Text.Length;
-            ((Button)sender).IsVisible = false; // Hide Edit button
-                                                // Show Save button
-            foreach (var child in ((StackLayout)((Button)sender).Parent).Children)
-            {
-                if (child is Button btn && btn.Text == "Save")
-                {
-                    btn.IsVisible = true;
-                    break;
-                }
-            }
-        }
-
-        private async void OnSaveClicked(object sender, EventArgs e)
-        {
-            string? newName = NameEntry.Text?.Trim();
-
-            if (string.IsNullOrEmpty(newName))
-            {
-                await DisplayAlert("Error", "Habbit name cannot be empty.", "OK");
-                return;
-            }
-
-            if (!string.Equals(newName, _originalName, StringComparison.OrdinalIgnoreCase))
-            {
-                bool exists = await HabbitService.Instance.HabbitExistsAsync(newName);
-                if (exists)
-                {
-                    await DisplayAlert("Duplicate Habbit", $"A habbit named '{newName}' already exists.", "OK");
-                    return;
-                }
-            }
-
-            await HabbitService.Instance.UpdateHabbitAsync(_originalHabbit, newName);
-            await Navigation.PopAsync();
+            base.OnDisappearing();
+            HabbitState.SelectedHabbit = null;
         }
     }
 }

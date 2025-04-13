@@ -5,72 +5,124 @@
              x:Class="HabbitStreak.Views.MainPage"
              x:DataType="vm:MainViewModel">
 
-    <!--<ContentPage.BindingContext>
-        <vm:MainViewModel />
-    </ContentPage.BindingContext>-->
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
 
-    <Grid RowDefinitions="Auto, Auto, Auto, Auto, *"
-          Padding="20" RowSpacing="15">
+            <!-- Add Habit UI -->
+            <Border Stroke="LightGray"
+                    StrokeThickness="1"
+                    Padding="10"
+                    StrokeShape="RoundRectangle 10">
+                <VerticalStackLayout>
 
-        <Entry x:Name="HabbitEntry"
-               Grid.Row="0"
-               Placeholder="Enter new habit"
-               Text="{Binding NewHabbitName, Mode=TwoWay}" />
+                    <Entry x:Name="HabbitEntry"
+                       Placeholder="Enter new habit"
+                       Margin="0,5,0,5"
+                       Text="{Binding NewHabbitName, Mode=TwoWay}" />
 
-        <Button Grid.Row="1"
-                Text="Add"
-                Command="{Binding AddHabbitCommand}"
-                CommandParameter="{Binding Source={x:Reference HabbitEntry}, Path=Text}" />
+                    <!-- Frequency Selection -->
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Select Frequency:" FontSize="16" FontAttributes="Bold" />
 
-        <Label Grid.Row="2"
-               Text="Your Habits:"
-               FontAttributes="Bold"
-               FontSize="20"
-               Margin="0,10,0,0" />
+                        <!-- Radio Button Group -->
+                        <HorizontalStackLayout>
+                            <RadioButton Margin="20,0,0,0" Content="Daily"
+                                 GroupName="Frequency"
+                                 IsChecked="{Binding IsDaily, Mode=TwoWay}" />
+                            <RadioButton Content="Weekly"
+                                 GroupName="Frequency"
+                                 IsChecked="{Binding IsWeekly, Mode=TwoWay}" />
+                            <RadioButton Content="Monthly"
+                                 GroupName="Frequency"
+                                 IsChecked="{Binding IsMonthly, Mode=TwoWay}" />
+                        </HorizontalStackLayout>
 
-        <Entry Grid.Row="3" Placeholder="Type to filter..."
-                Text="{Binding FilterText, Mode=TwoWay}" 
-                FontAttributes="Bold"
-                FontSize="20"
-                Margin="0,10,0,0"/>
-        
-        <CollectionView Grid.Row="4"
-                        ItemsSource="{Binding FilteredHabbits}"
-                        x:Name="mCollectionView"
-                        VerticalOptions="Fill"
-                        SelectionMode="Single"
-                        SelectionChanged="OnHabbitSelected"
-                        BackgroundColor="MediumPurple"
-                        >
+                        <!-- Slider -->
+                        <VerticalStackLayout IsVisible="{Binding IsWeeklyOrMonthly}" Spacing="5">
+                            <Label Text="{Binding FrequencyLabel}" FontAttributes="Bold" />
 
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"/>
-            </CollectionView.ItemsLayout>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Slider Grid.Column="0"
+                                    Minimum="1"
+                                    Maximum="{Binding SliderMaximum}"
+                                    Value="{Binding FrequencyCount, Mode=TwoWay}"
+                                    IsEnabled="{Binding IsSliderEnabled}"
+                                    MaximumTrackColor="LightGray"
+                                    MinimumTrackColor="MediumPurple"
+                                    ThumbColor="Pink" />
 
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Habbit">
-                    <Border Stroke="#CCCCCC"
-                            StrokeThickness="1"
-                            BackgroundColor="Purple"
-                            StrokeShape="RoundRectangle 20"
-                            Margin="12"
-                            Padding="16">
-                        <VerticalStackLayout Spacing="8" Margin="2">
-                            <Label Text="{Binding Name}"
-                                   FontSize="20"
-                                   FontAttributes="Bold"
-                                   TextColor="FloralWhite" />
-                            <Label Text="{Binding Description}"
-                                   FontSize="14"
-                                   FontAttributes="Italic"
-                                   TextColor="FloralWhite" />
-                            <Label Text="{Binding LastCompletedDate, StringFormat='Last Completed: {0:MMM dd, yyyy HH:mm}'}"
-                                   FontSize="12"
-                                   TextColor="NavajoWhite" />
+                                <Label Grid.Column="1"
+                                   Text="{Binding FrequencyCount}"
+                                   VerticalOptions="Center"
+                                   Margin="10,0,0,0"
+                                   FontSize="16"
+                                   FontAttributes="Bold" />
+                            </Grid>
                         </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </Grid>
+                    </VerticalStackLayout>
+
+                    <Button
+                        Text="Add"
+                        Command="{Binding AddHabbitCommand}"
+                        CommandParameter="{Binding Source={x:Reference HabbitEntry}, Path=Text}" />
+                
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Your Habits:"
+                   FontAttributes="Bold"
+                   FontSize="20"
+                   Margin="0,10,0,0" />
+
+            <Entry Placeholder="Type to filter..."
+                   Text="{Binding FilterText, Mode=TwoWay}"
+                   FontAttributes="Bold"
+                   FontSize="20" />
+
+            <!-- CollectionView -->
+            <CollectionView ItemsSource="{Binding FilteredHabbits}"
+                            x:Name="mCollectionView"
+                            SelectionMode="Single"
+                            SelectionChanged="OnHabbitSelected">
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="5" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Habbit">
+                        <Border Stroke="#CCCCCC"
+                                StrokeThickness="1"
+                                BackgroundColor="Purple"
+                                StrokeShape="RoundRectangle 20"
+                                Margin="12"
+                                Padding="16">
+                            <VerticalStackLayout Spacing="8" Margin="2">
+                                <HorizontalStackLayout>
+                                    <Label Text="{Binding Name}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="FloralWhite" />
+                                    <Label TextColor="Pink" FontSize="14" Text="    [" />
+                                    <Label Text="{Binding FrequencyDisplay}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="Pink" />
+                                    <Label TextColor="Pink" FontSize="14" Text="]" />
+                                </HorizontalStackLayout>
+
+                                <Label Text="{Binding Description}"
+                                       FontSize="12"
+                                       FontAttributes="Italic"
+                                       TextColor="FloralWhite" />
+                                <Label Text="{Binding LastCompletedDate, StringFormat='Last Completed: {0:MMM dd, yyyy HH:mm}'}"
+                                       FontSize="10"
+                                       TextColor="NavajoWhite" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

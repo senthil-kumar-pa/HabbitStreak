@@ -13,6 +13,7 @@ namespace HabbitStreak.ViewModels
 
         public ICommand MarkCompletedCommand { get; }
         public ICommand SaveCommand { get; }
+        public ICommand CancelCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand BackCommand { get; }
 
@@ -40,6 +41,21 @@ namespace HabbitStreak.ViewModels
                 if (newDescription != value)
                 {
                     newDescription = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private FrequencyType newFrequency;
+
+        public FrequencyType NewFrequencyType
+        {
+            get => newFrequency;
+            set
+            {
+                if (newFrequency != value)
+                {
+                    newFrequency = value;
                     OnPropertyChanged();
                 }
             }
@@ -86,8 +102,39 @@ namespace HabbitStreak.ViewModels
             NewDescription = _currentHabbit?.Description ?? "";
 
             MarkCompletedCommand = new Command(async () => await MarkCompletedAsync());
-            SaveCommand = new Command(async () => await SaveAsync());
-            EditCommand = new Command(() => SetEditMode());
+            SaveCommand = new Command(async () =>
+            {
+                if (!string.IsNullOrWhiteSpace(NewHabbitName))
+                {
+                    bool exists = await HabbitService.Instance.HabbitExistsAsync(_currentHabbit!.Id, NewHabbitName);
+                    if (exists)
+                    {
+                        await _dialogService.ShowAlertAsync("Duplicate Habbit", $"A habbit named '{NewHabbitName}' already exists.", "OK");
+                        return;
+                    }
+
+                    int freqCount = 1;
+
+                    if (IsDaily)
+                    {
+                        newFrequency = FrequencyType.Daily;
+                    }
+                    else if (IsWeekly)
+                    {
+                        newFrequency = FrequencyType.Weekly;
+                        freqCount = FrequencyCount;
+                    }
+                    else // Monthly
+                    {
+                        newFrequency = FrequencyType.Monthly;
+                        freqCount = FrequencyCount;
+                    }
+                    await SaveAsync();
+                }
+
+            });
+            CancelCommand = new Command(() => SetEditMode(false));
+            EditCommand = new Command(() => SetEditMode(true));
             BackCommand = new Command(async () => await _navigation.GoBackAsync());
         }
 
@@ -98,12 +145,112 @@ namespace HabbitStreak.ViewModels
             await _navigation.GoBackAsync();
         }
 
-        private void SetEditMode()
+        private void SetEditMode(bool editMode)
         {
-            IsReadOnly = false;
-            IsSaveVisible = true;
-            IsEditVisible = false;
+            IsReadOnly = !editMode;
+            IsSaveVisible = editMode;
+            IsEditVisible = !editMode;
         }
+
+        private bool isDaily = true;
+        public bool IsDaily
+        {
+            get => isDaily;
+            set
+            {
+                if (SetProperty(ref isDaily, value))
+                {
+                    OnPropertyChanged(nameof(IsWeeklyOrMonthly));
+                    UpdateFrequencyState();
+                }
+            }
+        }
+
+        private bool isWeekly;
+        public bool IsWeekly
+        {
+            get => isWeekly;
+            set
+            {
+                if (SetProperty(ref isWeekly, value))
+                {
+                    OnPropertyChanged(nameof(IsWeeklyOrMonthly));
+                    UpdateFrequencyState();
+                }
+            }
+        }
+
+        private bool isMonthly;
+        public bool IsMonthly
+        {
+            get => isMonthly;
+            set
+            {
+                if (SetProperty(ref isMonthly, value))
+                {
+                    OnPropertyChanged(nameof(IsWeeklyOrMonthly));
+                    UpdateFrequencyState();
+                }
+            }
+        }
+
+        public bool IsWeeklyOrMonthly => IsWeekly || IsMonthly;
+
+        private int frequencyCount = 1;
+        public int FrequencyCount
+        {
+            get => frequencyCount;
+            set
+            {
+                if (SetProperty(ref frequencyCount, value))
+                    UpdateFrequencyState();
+            }
+        }
+
+        private double sliderMaximum = 7;
+        public double SliderMaximum
+        {
+            get => sliderMaximum;
+            set => SetProperty(ref sliderMaximum, value);
+        }
+
+        private bool isSliderEnabled = true;
+        public bool IsSliderEnabled
+        {
+            get => isSliderEnabled;
+            set => SetProperty(ref isSliderEnabled, value);
+        }
+
+        private string frequencyLabel = "Times per week: 1";
+        public string FrequencyLabel
+        {
+            get => frequencyLabel;
+            set => SetProperty(ref frequencyLabel, value);
+        }
+
+        private void UpdateFrequencyState()
+        {
+            if (IsDaily)
+            {
+                FrequencyLabel = "Daily habit";
+                IsSliderEnabled = false;
+                SliderMaximum = 1;
+            }
+            else if (IsWeekly)
+            {
+                FrequencyLabel = $"Times per week: {FrequencyCount}";
+                IsSliderEnabled = true;
+                SliderMaximum = 7;
+            }
+            else if (IsMonthly)
+            {
+                FrequencyLabel = $"Times per month: {FrequencyCount}";
+                IsSliderEnabled = true;
+                SliderMaximum = 30;
+            }
+        }
+
+
         private async Task SaveAsync()
         {
             var newName = NewHabbitName.Trim();
@@ -125,7 +272,7 @@ namespace HabbitStreak.ViewModels
                 }
             }
 
-            await HabbitService.Instance.UpdateHabbitAsync(_currentHabbit!, newName, newDescription ?? "");
+            await HabbitService.Instance.UpdateHabbitAsync(_currentHabbit!, newName, newDescription ?? "", NewFrequencyType, frequencyCount);
             await _navigation.GoBackAsync();
         }
     }

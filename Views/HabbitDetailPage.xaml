@@ -2,37 +2,132 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HabbitStreak.Views.HabbitDetailPage"
              xmlns:vm="clr-namespace:HabbitStreak.ViewModels"
+             xmlns:fonts="clr-namespace:Fonts"
              Title="Habbit Details"
              x:DataType="vm:HabbitDetailViewModel">
-    
-    <StackLayout Orientation="Vertical" Padding="20" Spacing="20">
-        <Label Text="Habbit Name" />
-        <Entry x:Name="NameEntry"
+    <ScrollView>
+        <StackLayout Orientation="Vertical" Padding="20" Spacing="20">
+            <Label Text="Habbit Name" />
+            <Entry x:Name="NameEntry"
                Text="{Binding NewHabbitName, Mode=TwoWay}"
                IsReadOnly="{Binding IsReadOnly}"
                FontSize="14" />
 
-        <Label Text="Description"/>
-        <Entry x:Name="DescriptionEntry"
+            <Label Text="Description"/>
+            <Entry x:Name="DescriptionEntry"
                Text="{Binding NewDescription, Mode=TwoWay}"
                IsReadOnly="{Binding IsReadOnly}"
                FontSize="14" />
 
-        <Label Text="{Binding CurrentHabbit.LastCompletedDate, StringFormat='Last Completed: {0:MM/dd/yyyy}'}"
-               FontSize="Medium" />
+            <!-- Frequency Selection -->
+            <VerticalStackLayout Spacing="20">
+                <Label Text="Select Frequency:" FontSize="16" FontAttributes="Bold" />
 
-        <Button Text="Edit"
+                <!-- Radio Button Group -->
+                <HorizontalStackLayout Padding="5">
+                    <RadioButton Margin="20,0,20,0" Content="Daily"
+                    GroupName="Frequency" IsEnabled="{Binding IsSaveVisible}"
+                    IsChecked="{Binding IsDaily, Mode=TwoWay}" />
+                    <RadioButton Margin="20,0,20,0" Content="Weekly"
+                    GroupName="Frequency" IsEnabled="{Binding IsSaveVisible}"
+                    IsChecked="{Binding IsWeekly, Mode=TwoWay}" />
+                    <RadioButton Margin="20,0,20,0" Content="Monthly"
+                    GroupName="Frequency" IsEnabled="{Binding IsSaveVisible}"
+                    IsChecked="{Binding IsMonthly, Mode=TwoWay}" />
+                </HorizontalStackLayout>
+
+                <!-- Slider -->
+                <VerticalStackLayout IsVisible="{Binding IsWeeklyOrMonthly}" Spacing="5">
+                    <Label Text="{Binding FrequencyLabel}" FontAttributes="Bold" />
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Slider Grid.Column="0" 
+                            IsEnabled="{Binding IsSaveVisible}"
+                            Minimum="1"
+                            Maximum="{Binding SliderMaximum}"
+                            Value="{Binding FrequencyCount, Mode=TwoWay}"
+                            MaximumTrackColor="LightGray"
+                            MinimumTrackColor="MediumPurple"
+                            ThumbColor="Pink" />
+
+                        <Label Grid.Column="1"
+                            Text="{Binding FrequencyCount}"
+                            VerticalOptions="Center"
+                            Margin="10,0,0,0"
+                            FontSize="16"
+                            FontAttributes="Bold" />
+                    </Grid>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
+            <Button Text="Edit"
                 Command="{Binding EditCommand}" 
-                IsVisible="{Binding IsEditVisible}"/>
+                IsVisible="{Binding IsEditVisible}">
+                <Button.ImageSource>
+                    <FontImageSource
+                         Glyph="{x:Static fonts:FluentUI.edit_20_regular}"
+                         FontFamily="{x:Static fonts:FluentUI.FontFamily}"
+                         Size="20"
+                         Color="Purple" />
+                </Button.ImageSource>
 
-        <Button Text="Save"
-                IsVisible="{Binding IsSaveVisible}"
-                Command="{Binding SaveCommand}" />
+            </Button>
 
-        <Button Text="Mark as Completed"
-                Command="{Binding MarkCompletedCommand}" />
+            <Grid ColumnDefinitions="*,*" 
+                  IsVisible="{Binding IsSaveVisible}">
+                <Button Text="Save" Grid.Column="0"
+                    Command="{Binding SaveCommand}" 
+                    Background="DarkOliveGreen"
+                    Margin="0,0,10,0">
+                    <Button.ImageSource>
+                        <FontImageSource
+                         Glyph="{x:Static fonts:FluentUI.document_save_20_regular}"
+                         FontFamily="{x:Static fonts:FluentUI.FontFamily}"
+                         Size="20"
+                         Color="LightGreen" />
+                    </Button.ImageSource>
 
-        <Button Text="Back"
-        Command="{Binding BackCommand}" />
-    </StackLayout>
+                </Button>
+
+                <Button Text="Cancel" Grid.Column="1"
+                    Command="{Binding CancelCommand}" 
+                    Background="HotPink"
+                    Margin="10,0,0,0">
+                    <Button.ImageSource>
+                        <FontImageSource
+                         Glyph="{x:Static fonts:FluentUI.subtract_circle_20_regular}"
+                         FontFamily="{x:Static fonts:FluentUI.FontFamily}"
+                         Size="20"
+                         Color="DarkRed" />
+                    </Button.ImageSource>
+
+                </Button>
+            </Grid>
+            
+            <Button Text="Mark as Completed"
+                Command="{Binding MarkCompletedCommand}" >
+                <Button.ImageSource>
+                    <FontImageSource
+                         Glyph="{x:Static fonts:FluentUI.star_checkmark_20_regular}"
+                         FontFamily="{x:Static fonts:FluentUI.FontFamily}"
+                         Size="20"
+                         Color="Purple" />
+                </Button.ImageSource>
+
+            </Button>
+
+            <Button Text="Back"
+                Command="{Binding BackCommand}">
+
+                <Button.ImageSource>
+                    <FontImageSource
+                         Glyph="{x:Static fonts:FluentUI.arrow_left_20_regular}"
+                         FontFamily="{x:Static fonts:FluentUI.FontFamily}"
+                         Size="20"
+                         Color="Purple" />
+                </Button.ImageSource>
+                
+            </Button>
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

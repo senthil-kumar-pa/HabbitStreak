@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:HabbitStreak.ViewModels"
              xmlns:models="clr-namespace:HabbitStreak.Models"
+             xmlns:fonts="clr-namespace:Fonts"
              x:Class="HabbitStreak.Views.MainPage"
              x:DataType="vm:MainViewModel">
 
@@ -25,14 +26,14 @@
                         <Label Text="Select Frequency:" FontSize="16" FontAttributes="Bold" />
 
                         <!-- Radio Button Group -->
-                        <HorizontalStackLayout>
-                            <RadioButton Margin="20,0,0,0" Content="Daily"
+                        <HorizontalStackLayout Padding="5">
+                            <RadioButton Margin="20,0,20,0" Content="Daily"
                                  GroupName="Frequency"
                                  IsChecked="{Binding IsDaily, Mode=TwoWay}" />
-                            <RadioButton Content="Weekly"
+                            <RadioButton Margin="20,0,20,0" Content="Weekly"
                                  GroupName="Frequency"
                                  IsChecked="{Binding IsWeekly, Mode=TwoWay}" />
-                            <RadioButton Content="Monthly"
+                            <RadioButton Margin="20,0,20,0" Content="Monthly"
                                  GroupName="Frequency"
                                  IsChecked="{Binding IsMonthly, Mode=TwoWay}" />
                         </HorizontalStackLayout>
@@ -64,8 +65,16 @@
                     <Button
                         Text="Add"
                         Command="{Binding AddHabbitCommand}"
-                        CommandParameter="{Binding Source={x:Reference HabbitEntry}, Path=Text}" />
-                
+                        CommandParameter="{Binding Source={x:Reference HabbitEntry}, Path=Text}" >
+                        <Button.ImageSource>
+                            <FontImageSource
+                                Glyph="{x:Static fonts:FluentUI.add_square_24_regular}"
+                                FontFamily="{x:Static fonts:FluentUI.FontFamily}"
+                                Size="20"
+                                Color="Purple" />
+                        </Button.ImageSource>
+                    </Button>
+
                 </VerticalStackLayout>
             </Border>
 

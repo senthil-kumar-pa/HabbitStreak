@@ -49,6 +49,10 @@ namespace HabbitStreak.ViewModels
 
                     await AddHabbit(NewHabbitName, Description, frequency, freqCount);
                 }
+                else
+                {
+                    await _dialogService.ShowAlertAsync("Error", "Habbit name cannot be empty.", "OK");
+                }
             });
 
             MarkCompleteCommand = new Command<Habbit>(async Habbit =>

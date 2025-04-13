@@ -18,7 +18,7 @@
             /// <summary>
             /// Navigates to a page using the route name.
             /// </summary>
-            public async Task NavigateToAsync(string route, object parameter = null)
+            public static async Task NavigateToAsync(string route, object? parameter = null)
             {
                 if (parameter != null)
                 {

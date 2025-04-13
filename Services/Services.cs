@@ -1,61 +1,4 @@
-﻿/*using System.Text.Json;
-using HabbitStreak.Models;
-
-namespace HabbitStreak.Services
-{
-    public partial class HabbitService
-    {
-        private static string GetFilePath()
-        {
-            return "C:\\HabbitStreak\\Habbits.json";
-        }
-
-        public static async Task<List<Habbit>> LoadHabbitsAsync()
-        {
-            if (!File.Exists(GetFilePath())) return [];
-            string json = await File.ReadAllTextAsync(GetFilePath());
-            return JsonSerializer.Deserialize<List<Habbit>>(json) ?? [];
-        }
-
-        public static void SaveHabbits(List<Habbit> Habbits)
-        {
-            string json = JsonSerializer.Serialize(Habbits);
-            File.WriteAllText(GetFilePath(), json);
-        }
-
-        public static async Task UpdateHabbitAsync(Habbit updatedHabbit)
-        {
-            var habbits = await LoadHabbitsAsync();
-            var index = habbits.FindIndex(h => h.Name == updatedHabbit.Name);
-            if (index >= 0)
-            {
-                habbits[index] = updatedHabbit;
-                SaveHabbits(habbits);
-            }
-        }
-
-        public static async Task UpdateHabbitAsync(Habbit updatedHabbit, string newName)
-        {
-            var habbits = await LoadHabbitsAsync();
-            var index = habbits.FindIndex(h => h.Name.Equals(updatedHabbit.Name, StringComparison.OrdinalIgnoreCase));
-            if (index >= 0)
-            {
-                updatedHabbit.SetNewName(newName);
-                habbits[index] = updatedHabbit;
-                SaveHabbits(habbits);
-            }
-        }
-
-        public static async Task<bool> HabbitExistsAsync(string name)
-        {
-            var habbits = await LoadHabbitsAsync();
-            return habbits.Any(h => h.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-        }
-    }
-}
-*/
-
-using System.Text.Json;
+﻿using System.Text.Json;
 using HabbitStreak.Models;
 
 namespace HabbitStreak.Services
@@ -103,7 +46,7 @@ namespace HabbitStreak.Services
             }
         }
 
-        public async Task UpdateHabbitAsync(Habbit updatedHabbit, string newName, string newDescription)
+        public async Task UpdateHabbitAsync(Habbit updatedHabbit, string newName, string newDescription, FrequencyType newFreqType, int freqCount)
         {
             var habbits = await LoadHabbitsAsync();
             var index = habbits.FindIndex(h => h.Id.Equals(updatedHabbit.Id));
@@ -111,6 +54,7 @@ namespace HabbitStreak.Services
             {
                 updatedHabbit.SetNewName(newName);
                 updatedHabbit.SetNewDescription(newDescription);
+                updatedHabbit.SetFrequency(newFreqType, freqCount);
                 habbits[index] = updatedHabbit;
                 await SaveHabbitsAsync(habbits);
             }
@@ -120,6 +64,12 @@ namespace HabbitStreak.Services
         {
             var habbits = await LoadHabbitsAsync();
             return habbits.Any(h => h.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public async Task<bool> HabbitExistsAsync(Guid id, string name)
+        {
+            var habbits = await LoadHabbitsAsync();
+            return habbits.Any(h => h.Id != id && h.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

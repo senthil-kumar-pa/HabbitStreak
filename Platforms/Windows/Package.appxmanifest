@@ -43,4 +43,10 @@
     <rescap:Capability Name="runFullTrust" />
   </Capabilities>
 
+	<Extensions>
+		<uap:Extension Category="windows.toastNotificationActivation">
+			<uap:ToastNotificationActivation ToastActivatorCLSID="7C05E08D-6039-4331-A781-54191CBFEBDB" />
+		</uap:Extension>
+	</Extensions>
+
 </Package>

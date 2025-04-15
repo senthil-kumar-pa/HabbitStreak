@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using HabbitStreak.Models;
 using HabbitStreak.Resources.AppIcon;
 using HabbitStreak.Services;
@@ -292,7 +293,10 @@ namespace HabbitStreak.ViewModels
             }
 
             await HabbitService.Instance.UpdateHabbitAsync(_currentHabbit!, newName, newDescription ?? "", NewFrequencyType, frequencyCount, SelectedIcon);
-            await _navigation.GoBackAsync();
+
+            SendShowSnackbarMessage();
+
+            SetEditMode(false);
         }
 
         private string _selectedIcon = string.Empty;
@@ -307,6 +311,26 @@ namespace HabbitStreak.ViewModels
                     OnPropertyChanged(nameof(SelectedIcon));
                 }
             }
+        }
+
+        private bool _isSnackbarVisible;
+
+        public bool IsSnackbarVisible
+        {
+            get => _isSnackbarVisible;
+            set
+            {
+                if (_isSnackbarVisible != value)
+                {
+                    _isSnackbarVisible = value;
+                    OnPropertyChanged(nameof(IsSnackbarVisible));
+                }
+            }
+        }
+
+        public void SendShowSnackbarMessage()
+        {
+            WeakReferenceMessenger.Default.Send(new ShowSnackbarMessage("Habbit saved successfully"));
         }
     }
 }

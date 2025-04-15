@@ -48,17 +48,17 @@
             <!-- Radio Button Group -->
             <Border Stroke="MediumPurple" Grid.Row="3" Grid.Column="1" Padding="2">
                 <VerticalStackLayout>
-                <HorizontalStackLayout>
-                    <RadioButton Content="Daily"
+                    <HorizontalStackLayout>
+                        <RadioButton Content="Daily"
                         GroupName="Frequency" IsEnabled="{Binding IsSaveVisible}"
                         IsChecked="{Binding IsDaily, Mode=TwoWay}" />
-                    <RadioButton Content="Weekly"
+                        <RadioButton Content="Weekly"
                         GroupName="Frequency" IsEnabled="{Binding IsSaveVisible}"
                         IsChecked="{Binding IsWeekly, Mode=TwoWay}" />
-                    <RadioButton Content="Monthly"
+                        <RadioButton Content="Monthly"
                         GroupName="Frequency" IsEnabled="{Binding IsSaveVisible}"
                         IsChecked="{Binding IsMonthly, Mode=TwoWay}" />
-                </HorizontalStackLayout>
+                    </HorizontalStackLayout>
                     <HorizontalStackLayout HorizontalOptions="Fill">
                         <Label Text="{Binding FrequencyLabel}" FontAttributes="Bold" />
 
@@ -160,6 +160,32 @@
 
                 </Button>
             </Border>
+
+            <AbsoluteLayout Grid.Row="0" Grid.Column="1" x:Name="SnackbarHost"
+                IsVisible="False"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"
+                InputTransparent="True">
+
+                <Border x:Name="Snackbar"
+                    BackgroundColor="LightYellow"
+                    StrokeThickness="0"
+                    Padding="10"
+                    StrokeShape="RoundRectangle 15"
+                    AbsoluteLayout.LayoutBounds="0,0,AutoSize,AutoSize"
+                    AbsoluteLayout.LayoutFlags="PositionProportional"
+                    Opacity="0"
+                    TranslationX="100"
+                    TranslationY="-100">
+                    <Label Text="Habbit saved successfully"
+                        TextColor="Purple"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center" />
+                </Border>
+            </AbsoluteLayout>
+
+
+
         </Grid>
     </ScrollView>
 </ContentPage>

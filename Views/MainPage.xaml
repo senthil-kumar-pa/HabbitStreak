@@ -20,7 +20,14 @@
                        Placeholder="Enter new habit"
                        Margin="0,5,0,5"
                        Text="{Binding NewHabbitName, Mode=TwoWay}" />
+                    
 
+                    <Picker Title="Choose Icon" Margin="0,5,0,5" FontSize="20"
+                        ItemsSource="{Binding IconOptions}"
+                        SelectedItem="{Binding SelectedIcon, Mode=TwoWay}"
+                        HorizontalOptions="Fill" />
+
+                    
                     <!-- Frequency Selection -->
                     <VerticalStackLayout Spacing="10">
                         <Label Text="Select Frequency:" FontSize="16" FontAttributes="Bold" />
@@ -105,28 +112,38 @@
                                 BackgroundColor="Purple"
                                 StrokeShape="RoundRectangle 20"
                                 Margin="12"
-                                Padding="16">
+                                Padding="8">
                             <VerticalStackLayout Spacing="8" Margin="2">
+                                
                                 <HorizontalStackLayout>
-                                    <Label Text="{Binding Name}"
-                                           FontSize="14"
-                                           FontAttributes="Bold"
-                                           TextColor="FloralWhite" />
-                                    <Label TextColor="Pink" FontSize="14" Text="    [" />
-                                    <Label Text="{Binding FrequencyDisplay}"
-                                           FontSize="14"
-                                           FontAttributes="Bold"
-                                           TextColor="Pink" />
-                                    <Label TextColor="Pink" FontSize="14" Text="]" />
-                                </HorizontalStackLayout>
+                                    <Border Stroke="#CCCCCC" HorizontalOptions="Center" VerticalOptions="Center"
+                                        StrokeThickness="2"
+                                        BackgroundColor="MediumPurple"
+                                        StrokeShape="RoundRectangle 50" WidthRequest="75" HeightRequest="75">
 
-                                <Label Text="{Binding Description}"
-                                       FontSize="12"
-                                       FontAttributes="Italic"
-                                       TextColor="FloralWhite" />
-                                <Label Text="{Binding LastCompletedDate, StringFormat='Last Completed: {0:MMM dd, yyyy HH:mm}'}"
-                                       FontSize="10"
-                                       TextColor="NavajoWhite" />
+                                        <Label Text="{Binding DisplayIcon}" FontSize="45" Margin="4,3,0,0" />
+
+                                    </Border>
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding Name}" Margin="20,0,0,0"
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               TextColor="FloralWhite" />
+
+                                        <Label Text="{Binding FrequencyDisplay}" Margin="20,0,0,0"
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               TextColor="Pink" />
+
+                                        <Label Text="{Binding Description}" Margin="20,0,0,0"
+                                               FontSize="12"
+                                               FontAttributes="Italic"
+                                               TextColor="FloralWhite" />
+                                        <Label Text="{Binding LastCompletedDate, StringFormat='Last Completed: {0:MMM dd, yyyy HH:mm}'}"
+                                               FontSize="10" Margin="20,0,0,0"
+                                               TextColor="NavajoWhite" />
+                                    </VerticalStackLayout>
+                                </HorizontalStackLayout>
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

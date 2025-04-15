@@ -46,7 +46,7 @@ namespace HabbitStreak.Services
             }
         }
 
-        public async Task UpdateHabbitAsync(Habbit updatedHabbit, string newName, string newDescription, FrequencyType newFreqType, int freqCount)
+        public async Task UpdateHabbitAsync(Habbit updatedHabbit, string newName, string newDescription, FrequencyType newFreqType, int freqCount, string newIcon)
         {
             var habbits = await LoadHabbitsAsync();
             var index = habbits.FindIndex(h => h.Id.Equals(updatedHabbit.Id));
@@ -55,6 +55,7 @@ namespace HabbitStreak.Services
                 updatedHabbit.SetNewName(newName);
                 updatedHabbit.SetNewDescription(newDescription);
                 updatedHabbit.SetFrequency(newFreqType, freqCount);
+                updatedHabbit.SetNewIcon(newIcon);
                 habbits[index] = updatedHabbit;
                 await SaveHabbitsAsync(habbits);
             }

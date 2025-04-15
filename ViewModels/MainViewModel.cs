@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using HabbitStreak.Models;
+using HabbitStreak.Resources.AppIcon;
 using HabbitStreak.Services;
 
 namespace HabbitStreak.ViewModels
@@ -12,12 +13,15 @@ namespace HabbitStreak.ViewModels
         public ObservableCollection<Habbit> _filteredHabbits;
         public ICommand AddHabbitCommand { get; }
         public ICommand MarkCompleteCommand { get; }
-
+        public ObservableCollection<string> IconOptions { get; } = new();
         public MainViewModel(IUserDialogService dialogService)
         {
             _dialogService = dialogService;
             _filteredHabbits = [];
-
+            foreach (var icon in IconProvider.HabbitIcons)
+            {
+                IconOptions.Add(icon);
+            }
             AddHabbitCommand = new Command(async () =>
             {
                 if (!string.IsNullOrWhiteSpace(NewHabbitName))
@@ -47,7 +51,7 @@ namespace HabbitStreak.ViewModels
                         freqCount = FrequencyCount;
                     }
 
-                    await AddHabbit(NewHabbitName, Description, frequency, freqCount);
+                    await AddHabbit(SelectedIcon, NewHabbitName, Description, frequency, freqCount);
                 }
                 else
                 {
@@ -66,6 +70,7 @@ namespace HabbitStreak.ViewModels
         }
 
         private string? newHabbitName;
+
         public string NewHabbitName
         {
             get => newHabbitName ?? "";
@@ -105,6 +110,7 @@ namespace HabbitStreak.ViewModels
         }
 
         private string _filterText = string.Empty;
+
         public string FilterText
         {
             get => _filterText;
@@ -130,6 +136,7 @@ namespace HabbitStreak.ViewModels
         }
 
         private bool isDaily = true;
+
         public bool IsDaily
         {
             get => isDaily;
@@ -144,6 +151,7 @@ namespace HabbitStreak.ViewModels
         }
 
         private bool isWeekly;
+
         public bool IsWeekly
         {
             get => isWeekly;
@@ -158,6 +166,7 @@ namespace HabbitStreak.ViewModels
         }
 
         private bool isMonthly;
+
         public bool IsMonthly
         {
             get => isMonthly;
@@ -174,6 +183,7 @@ namespace HabbitStreak.ViewModels
         public bool IsWeeklyOrMonthly => IsWeekly || IsMonthly;
 
         private int frequencyCount = 1;
+
         public int FrequencyCount
         {
             get => frequencyCount;
@@ -185,6 +195,7 @@ namespace HabbitStreak.ViewModels
         }
 
         private double sliderMaximum = 7;
+
         public double SliderMaximum
         {
             get => sliderMaximum;
@@ -192,6 +203,7 @@ namespace HabbitStreak.ViewModels
         }
 
         private bool isSliderEnabled = true;
+
         public bool IsSliderEnabled
         {
             get => isSliderEnabled;
@@ -199,6 +211,7 @@ namespace HabbitStreak.ViewModels
         }
 
         private string frequencyLabel = "Times per week: 1";
+
         public string FrequencyLabel
         {
             get => frequencyLabel;
@@ -236,12 +249,19 @@ namespace HabbitStreak.ViewModels
             FilteredHabbits = new ObservableCollection<Habbit>(Habbits);
         }
 
-        private async Task AddHabbit(string name, string description, FrequencyType frequency, int frequencyCount)
+        private async Task AddHabbit(string icon, string name, string description, FrequencyType frequency, int frequencyCount)
         {
-            var habbit = new Habbit(Guid.NewGuid(), name, description, DateTime.Today, null, frequency, frequencyCount);
+            var habbit = new Habbit(Guid.NewGuid(), icon, name, description, DateTime.Today, null, frequency, frequencyCount);
             Habbits.Add(habbit);
-            _ = HabbitService.Instance.SaveHabbitsAsync([.. Habbits]);
+            await HabbitService.Instance.SaveHabbitsAsync([.. Habbits]);
             await LoadHabbitsAsync();
+        }
+
+        private string _selectedIcon = string.Empty;
+        public string SelectedIcon
+        {
+            get => _selectedIcon;
+            set => SetProperty(ref _selectedIcon, value);
         }
 
     }

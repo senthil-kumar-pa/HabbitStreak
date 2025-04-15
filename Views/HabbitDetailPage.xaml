@@ -9,10 +9,15 @@
         <StackLayout Orientation="Vertical" Padding="20" Spacing="20">
             <Label Text="Habbit Name" />
             <Entry x:Name="NameEntry"
-               Text="{Binding NewHabbitName, Mode=TwoWay}"
-               IsReadOnly="{Binding IsReadOnly}"
-               FontSize="14" />
-
+                Text="{Binding NewHabbitName, Mode=TwoWay}"
+                IsReadOnly="{Binding IsReadOnly}"
+                FontSize="14" />
+            
+            <Picker Title="Choose Icon" Margin="0,5,0,5" FontSize="20"
+                ItemsSource="{Binding IconOptions}"
+                SelectedItem="{Binding SelectedIcon, Mode=TwoWay}"
+                HorizontalOptions="Fill" IsEnabled="{Binding IsSaveVisible}"/>
+            
             <Label Text="Description"/>
             <Entry x:Name="DescriptionEntry"
                Text="{Binding NewDescription, Mode=TwoWay}"

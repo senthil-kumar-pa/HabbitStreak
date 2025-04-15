@@ -1,5 +1,7 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 using HabbitStreak.Models;
+using HabbitStreak.Resources.AppIcon;
 using HabbitStreak.Services;
 using HabbitStreak.Services.HabitStreak.Services;
 using HabbitStreak.States;
@@ -10,7 +12,7 @@ namespace HabbitStreak.ViewModels
     {
         private readonly NavigationService _navigation;
         private readonly IUserDialogService _dialogService;
-
+        public ObservableCollection<string> IconOptions { get; } = new();
         public ICommand MarkCompletedCommand { get; }
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
@@ -89,6 +91,10 @@ namespace HabbitStreak.ViewModels
             _navigation = navigationService;
             _dialogService = dialogService;
             _currentHabbit = HabbitState.SelectedHabbit!;
+            foreach (var icon in IconProvider.HabbitIcons)
+            {
+                IconOptions.Add(icon);
+            }
             _isReadOnly = true;
             IsReadOnly = true;
 
@@ -100,6 +106,7 @@ namespace HabbitStreak.ViewModels
 
             NewHabbitName = _currentHabbit?.Name ?? "";
             NewDescription = _currentHabbit?.Description ?? "";
+            SelectedIcon = _currentHabbit?.Icon ?? "";
 
             MarkCompletedCommand = new Command(async () => await MarkCompletedAsync());
             SaveCommand = new Command(async () =>
@@ -272,8 +279,22 @@ namespace HabbitStreak.ViewModels
                 }
             }
 
-            await HabbitService.Instance.UpdateHabbitAsync(_currentHabbit!, newName, newDescription ?? "", NewFrequencyType, frequencyCount);
+            await HabbitService.Instance.UpdateHabbitAsync(_currentHabbit!, newName, newDescription ?? "", NewFrequencyType, frequencyCount, SelectedIcon);
             await _navigation.GoBackAsync();
+        }
+
+        private string _selectedIcon = string.Empty;
+        public string SelectedIcon
+        {
+            get => _selectedIcon;
+            set
+            {
+                if (_selectedIcon != value)
+                {
+                    _selectedIcon = value;
+                    OnPropertyChanged();
+                }
+            }
         }
     }
 }

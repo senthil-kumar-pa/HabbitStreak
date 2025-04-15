@@ -6,133 +6,160 @@
              Title="Habbit Details"
              x:DataType="vm:HabbitDetailViewModel">
     <ScrollView>
-        <StackLayout Orientation="Vertical" Padding="20" Spacing="20">
-            <Label Text="Habbit Name" />
-            <Entry x:Name="NameEntry"
-                Text="{Binding NewHabbitName, Mode=TwoWay}"
-                IsReadOnly="{Binding IsReadOnly}"
-                FontSize="14" />
-            
-            <Picker Title="Choose Icon" Margin="0,5,0,5" FontSize="20"
-                ItemsSource="{Binding IconOptions}"
-                SelectedItem="{Binding SelectedIcon, Mode=TwoWay}"
-                HorizontalOptions="Fill" IsEnabled="{Binding IsSaveVisible}"/>
-            
-            <Label Text="Description"/>
-            <Entry x:Name="DescriptionEntry"
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" Padding="1">
+            <Border Stroke="MediumPurple" Grid.Row="0" Grid.Column="0" Padding="2">
+                <Label Text="Habbit Name" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Start" VerticalTextAlignment="Center"/>
+            </Border>
+            <Border Stroke="MediumPurple" Grid.Row="0" Grid.Column="1" Padding="2">
+                <Entry x:Name="NameEntry"
+                    Text="{Binding NewHabbitName, Mode=TwoWay}"
+                    IsReadOnly="{Binding IsReadOnly}"
+                    FontSize="14" />
+            </Border>
+
+            <Border Stroke="MediumPurple" Grid.Row="1" Grid.Column="0" Padding="2">
+                <Label Text="Choose Icon" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
+            </Border>
+
+            <Border Stroke="MediumPurple" Grid.Row="1" Grid.Column="1" Padding="2">
+                <Picker FontSize="22"
+                    ItemsSource="{Binding IconOptions}"
+                    SelectedItem="{Binding SelectedIcon, Mode=TwoWay}"
+                    HorizontalOptions="Fill"
+                    IsEnabled="{Binding IsSaveVisible}"/>
+            </Border>
+
+            <Border Stroke="MediumPurple" Grid.Row="2" Grid.Column="0" Padding="2">
+                <Label Text="Description" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Start" VerticalTextAlignment="Center"/>
+            </Border>
+
+            <Border Stroke="MediumPurple" Grid.Row="2" Grid.Column="1" Padding="2">
+                <Entry x:Name="DescriptionEntry"
                Text="{Binding NewDescription, Mode=TwoWay}"
                IsReadOnly="{Binding IsReadOnly}"
                FontSize="14" />
+            </Border>
 
             <!-- Frequency Selection -->
-            <VerticalStackLayout Spacing="20">
-                <Label Text="Select Frequency:" FontSize="16" FontAttributes="Bold" />
+            <Border Stroke="MediumPurple" Grid.Row="3" Grid.Column="0" Padding="2">
+                <Label Text="Select Frequency" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
+            </Border>
 
-                <!-- Radio Button Group -->
-                <HorizontalStackLayout Padding="5">
-                    <RadioButton Margin="20,0,20,0" Content="Daily"
-                    GroupName="Frequency" IsEnabled="{Binding IsSaveVisible}"
-                    IsChecked="{Binding IsDaily, Mode=TwoWay}" />
-                    <RadioButton Margin="20,0,20,0" Content="Weekly"
-                    GroupName="Frequency" IsEnabled="{Binding IsSaveVisible}"
-                    IsChecked="{Binding IsWeekly, Mode=TwoWay}" />
-                    <RadioButton Margin="20,0,20,0" Content="Monthly"
-                    GroupName="Frequency" IsEnabled="{Binding IsSaveVisible}"
-                    IsChecked="{Binding IsMonthly, Mode=TwoWay}" />
+            <!-- Radio Button Group -->
+            <Border Stroke="MediumPurple" Grid.Row="3" Grid.Column="1" Padding="2">
+                <VerticalStackLayout>
+                <HorizontalStackLayout>
+                    <RadioButton Content="Daily"
+                        GroupName="Frequency" IsEnabled="{Binding IsSaveVisible}"
+                        IsChecked="{Binding IsDaily, Mode=TwoWay}" />
+                    <RadioButton Content="Weekly"
+                        GroupName="Frequency" IsEnabled="{Binding IsSaveVisible}"
+                        IsChecked="{Binding IsWeekly, Mode=TwoWay}" />
+                    <RadioButton Content="Monthly"
+                        GroupName="Frequency" IsEnabled="{Binding IsSaveVisible}"
+                        IsChecked="{Binding IsMonthly, Mode=TwoWay}" />
                 </HorizontalStackLayout>
+                    <HorizontalStackLayout HorizontalOptions="Fill">
+                        <Label Text="{Binding FrequencyLabel}" FontAttributes="Bold" />
 
-                <!-- Slider -->
-                <VerticalStackLayout IsVisible="{Binding IsWeeklyOrMonthly}" Spacing="5">
-                    <Label Text="{Binding FrequencyLabel}" FontAttributes="Bold" />
-
-                    <Grid ColumnDefinitions="*,Auto">
-                        <Slider Grid.Column="0" 
-                            IsEnabled="{Binding IsSaveVisible}"
-                            Minimum="1"
-                            Maximum="{Binding SliderMaximum}"
-                            Value="{Binding FrequencyCount, Mode=TwoWay}"
-                            MaximumTrackColor="LightGray"
-                            MinimumTrackColor="MediumPurple"
-                            ThumbColor="Pink" />
-
-                        <Label Grid.Column="1"
-                            Text="{Binding FrequencyCount}"
-                            VerticalOptions="Center"
-                            Margin="10,0,0,0"
-                            FontSize="16"
-                            FontAttributes="Bold" />
-                    </Grid>
+                        <Slider WidthRequest="200" Margin="10,-5,20,0"
+                                IsVisible="{Binding IsWeeklyOrMonthly}"
+                                Minimum="1"
+                                Maximum="{Binding SliderMaximum}"
+                                Value="{Binding FrequencyCount, Mode=TwoWay}"
+                                MaximumTrackColor="LightGray"
+                                MinimumTrackColor="MediumPurple"
+                                ThumbColor="Pink" />
+                    </HorizontalStackLayout>
                 </VerticalStackLayout>
-            </VerticalStackLayout>
+            </Border>
 
-            <Button Text="Edit"
+            <Border Stroke="MediumPurple" Grid.Row="4" Grid.Column="0"  Padding="2">
+                <Label Text="Last Completed" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
+            </Border>
+            <Border Stroke="MediumPurple" Grid.Row="4" Grid.Column="1" Padding="2">
+                <Label Text="{Binding LastCompleted}"
+                   FontSize="14" FontAttributes="Bold" HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
+                   TextColor="NavajoWhite" />
+            </Border>
+
+            <Border Stroke="MediumPurple" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Padding="2">
+                <Button Text="Edit"
                 Command="{Binding EditCommand}" 
                 IsVisible="{Binding IsEditVisible}">
-                <Button.ImageSource>
-                    <FontImageSource
+                    <Button.ImageSource>
+                        <FontImageSource
                          Glyph="{x:Static fonts:FluentUI.edit_20_regular}"
                          FontFamily="{x:Static fonts:FluentUI.FontFamily}"
                          Size="20"
                          Color="Purple" />
-                </Button.ImageSource>
+                    </Button.ImageSource>
 
-            </Button>
+                </Button>
+            </Border>
 
-            <Grid ColumnDefinitions="*,*" 
+            <Border Stroke="MediumPurple" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Padding="2">
+                <Grid ColumnDefinitions="*,*" 
                   IsVisible="{Binding IsSaveVisible}">
-                <Button Text="Save" Grid.Column="0"
+                    <Button Text="Save" Grid.Column="0"
                     Command="{Binding SaveCommand}" 
                     Background="DarkOliveGreen"
                     Margin="0,0,10,0">
-                    <Button.ImageSource>
-                        <FontImageSource
+                        <Button.ImageSource>
+                            <FontImageSource
                          Glyph="{x:Static fonts:FluentUI.document_save_20_regular}"
                          FontFamily="{x:Static fonts:FluentUI.FontFamily}"
                          Size="20"
                          Color="LightGreen" />
-                    </Button.ImageSource>
+                        </Button.ImageSource>
 
-                </Button>
+                    </Button>
 
-                <Button Text="Cancel" Grid.Column="1"
+                    <Button Text="Cancel" Grid.Column="1"
                     Command="{Binding CancelCommand}" 
                     Background="HotPink"
                     Margin="10,0,0,0">
-                    <Button.ImageSource>
-                        <FontImageSource
+                        <Button.ImageSource>
+                            <FontImageSource
                          Glyph="{x:Static fonts:FluentUI.subtract_circle_20_regular}"
                          FontFamily="{x:Static fonts:FluentUI.FontFamily}"
                          Size="20"
                          Color="DarkRed" />
-                    </Button.ImageSource>
+                        </Button.ImageSource>
 
-                </Button>
-            </Grid>
-            
-            <Button Text="Mark as Completed"
+                    </Button>
+                </Grid>
+
+            </Border>
+
+            <Border Stroke="MediumPurple" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Padding="2">
+                <Button Text="Mark as Completed"
                 Command="{Binding MarkCompletedCommand}" >
-                <Button.ImageSource>
-                    <FontImageSource
+                    <Button.ImageSource>
+                        <FontImageSource
                          Glyph="{x:Static fonts:FluentUI.star_checkmark_20_regular}"
                          FontFamily="{x:Static fonts:FluentUI.FontFamily}"
                          Size="20"
                          Color="Purple" />
-                </Button.ImageSource>
+                    </Button.ImageSource>
 
-            </Button>
+                </Button>
+            </Border>
 
-            <Button Text="Back"
+            <Border Stroke="MediumPurple" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Padding="2">
+                <Button Text="Back"
                 Command="{Binding BackCommand}">
 
-                <Button.ImageSource>
-                    <FontImageSource
+                    <Button.ImageSource>
+                        <FontImageSource
                          Glyph="{x:Static fonts:FluentUI.arrow_left_20_regular}"
                          FontFamily="{x:Static fonts:FluentUI.FontFamily}"
                          Size="20"
                          Color="Purple" />
-                </Button.ImageSource>
-                
-            </Button>
-        </StackLayout>
+                    </Button.ImageSource>
+
+                </Button>
+            </Border>
+        </Grid>
     </ScrollView>
 </ContentPage>

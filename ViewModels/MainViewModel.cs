@@ -18,10 +18,7 @@ namespace HabbitStreak.ViewModels
         {
             _dialogService = dialogService;
             _filteredHabbits = [];
-            foreach (var icon in IconProvider.HabbitIcons)
-            {
-                IconOptions.Add(icon);
-            }
+            IconOptions = new ObservableCollection<string>(IconProvider.HabbitIcons);
             AddHabbitCommand = new Command(async () =>
             {
                 if (!string.IsNullOrWhiteSpace(NewHabbitName))
@@ -124,14 +121,21 @@ namespace HabbitStreak.ViewModels
 
         private void ApplyFilter()
         {
+            var filterText = string.Empty;
             if (string.IsNullOrWhiteSpace(FilterText))
             {
-                FilteredHabbits = new ObservableCollection<Habbit>(Habbits);
+                FilteredHabbits = [.. Habbits];
             }
             else
             {
-                FilteredHabbits = new ObservableCollection<Habbit>(
-                    Habbits.Where(item => item.Name.ToLower().Contains(FilterText.ToLower())));
+                filterText = FilterText.ToLower();
+
+                FilteredHabbits = [.. Habbits.Where(item =>
+                        item.Name.ToLower().Contains(filterText) ||
+                        item.Description.ToLower().Contains(filterText) ||
+                        item.Frequency.ToString().ToLower().Contains(filterText) ||
+                        item.Icon.ToLower().Contains(filterText)
+                        )];
             }
         }
 
@@ -246,7 +250,7 @@ namespace HabbitStreak.ViewModels
             Habbits.Clear();
             foreach (var h in loaded) Habbits.Add(h);
 
-            FilteredHabbits = new ObservableCollection<Habbit>(Habbits);
+            ApplyFilter();
         }
 
         private async Task AddHabbit(string icon, string name, string description, FrequencyType frequency, int frequencyCount)

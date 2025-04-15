@@ -33,6 +33,20 @@ namespace HabbitStreak.ViewModels
             }
         }
 
+        private string? lastCompleted;
+        public string? LastCompleted
+        {
+            get => lastCompleted ?? "Not completed";
+            set
+            {
+                if (lastCompleted != value)
+                {
+                    lastCompleted = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private string? newDescription;
 
         public string NewDescription
@@ -91,10 +105,7 @@ namespace HabbitStreak.ViewModels
             _navigation = navigationService;
             _dialogService = dialogService;
             _currentHabbit = HabbitState.SelectedHabbit!;
-            foreach (var icon in IconProvider.HabbitIcons)
-            {
-                IconOptions.Add(icon);
-            }
+            IconOptions = new ObservableCollection<string>(IconProvider.HabbitIcons);
             _isReadOnly = true;
             IsReadOnly = true;
 
@@ -107,6 +118,7 @@ namespace HabbitStreak.ViewModels
             NewHabbitName = _currentHabbit?.Name ?? "";
             NewDescription = _currentHabbit?.Description ?? "";
             SelectedIcon = _currentHabbit?.Icon ?? "";
+            LastCompleted = _currentHabbit?.LastCompletedDate?.ToString("dd-MMM-yyyy HH:mm:ss") ?? "Not Completed";
 
             MarkCompletedCommand = new Command(async () => await MarkCompletedAsync());
             SaveCommand = new Command(async () =>
@@ -239,19 +251,19 @@ namespace HabbitStreak.ViewModels
         {
             if (IsDaily)
             {
-                FrequencyLabel = "Daily habit";
+                FrequencyLabel = "Daily";
                 IsSliderEnabled = false;
                 SliderMaximum = 1;
             }
             else if (IsWeekly)
             {
-                FrequencyLabel = $"Times per week: {FrequencyCount}";
+                FrequencyLabel = $"Times / Week: {FrequencyCount}";
                 IsSliderEnabled = true;
                 SliderMaximum = 7;
             }
             else if (IsMonthly)
             {
-                FrequencyLabel = $"Times per month: {FrequencyCount}";
+                FrequencyLabel = $"Times / Month: {FrequencyCount}";
                 IsSliderEnabled = true;
                 SliderMaximum = 30;
             }
@@ -292,7 +304,7 @@ namespace HabbitStreak.ViewModels
                 if (_selectedIcon != value)
                 {
                     _selectedIcon = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SelectedIcon));
                 }
             }
         }

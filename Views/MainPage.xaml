@@ -10,41 +10,57 @@
         <VerticalStackLayout Padding="20" Spacing="15">
 
             <!-- Add Habit UI -->
-            <Border Stroke="LightGray"
+            <Border Stroke="MediumPurple"
                     StrokeThickness="1"
                     Padding="10"
                     StrokeShape="RoundRectangle 10">
                 <VerticalStackLayout>
 
-                    <Entry x:Name="HabbitEntry"
-                       Placeholder="Enter new habit"
-                       Margin="0,5,0,5"
-                       Text="{Binding NewHabbitName, Mode=TwoWay}" />
-                    
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" Padding="1">
+                        <Border Stroke="MediumPurple" Grid.Row="0" Grid.Column="0" Padding="2">
+                            <Label Text="Habit Name"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               VerticalTextAlignment="Center" />
+                        </Border>
+                        <Border Stroke="MediumPurple" Grid.Row="0" Grid.Column="1" Padding="2">
+                            <Entry x:Name="HabbitEntry"
+                               Placeholder="Enter new habit"
+                               Text="{Binding NewHabbitName, Mode=TwoWay}" />
+                        </Border>
 
-                    <Picker Title="Choose Icon" Margin="0,5,0,5" FontSize="20"
-                        ItemsSource="{Binding IconOptions}"
-                        SelectedItem="{Binding SelectedIcon, Mode=TwoWay}"
-                        HorizontalOptions="Fill" />
+                        <Border Stroke="MediumPurple" Grid.Row="1" Grid.Column="0" Padding="2">
+                            <Label Text="Choose Icon"
+                               FontSize="16"
+                               FontAttributes="Bold" VerticalTextAlignment="Center"/>
+                        </Border>
+                        <Border Stroke="MediumPurple" Grid.Row="1" Grid.Column="1" Padding="2">
+                            <Picker FontSize="22"
+                                ItemsSource="{Binding IconOptions}"
+                                SelectedItem="{Binding SelectedIcon, Mode=TwoWay}" />
+                        </Border>
 
-                    
+                        <Border Stroke="MediumPurple" Grid.Row="2" Grid.Column="0" Padding="2,0,15,0">
+                            <Label Text="Choose Frequency" FontSize="16" FontAttributes="Bold" VerticalTextAlignment="Center"/>
+                        </Border>
+
+                        <Border Stroke="MediumPurple" Grid.Row="2" Grid.Column="1" >
+                            <HorizontalStackLayout Spacing="5">
+                                <RadioButton Content="Daily"
+                                        GroupName="Frequency"
+                                        IsChecked="{Binding IsDaily, Mode=TwoWay}" />
+                                <RadioButton Content="Weekly"
+                                        GroupName="Frequency"
+                                        IsChecked="{Binding IsWeekly, Mode=TwoWay}" />
+                                <RadioButton Content="Monthly"
+                                        GroupName="Frequency"
+                                        IsChecked="{Binding IsMonthly, Mode=TwoWay}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </Grid>
+
                     <!-- Frequency Selection -->
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="Select Frequency:" FontSize="16" FontAttributes="Bold" />
-
-                        <!-- Radio Button Group -->
-                        <HorizontalStackLayout Padding="5">
-                            <RadioButton Margin="20,0,20,0" Content="Daily"
-                                 GroupName="Frequency"
-                                 IsChecked="{Binding IsDaily, Mode=TwoWay}" />
-                            <RadioButton Margin="20,0,20,0" Content="Weekly"
-                                 GroupName="Frequency"
-                                 IsChecked="{Binding IsWeekly, Mode=TwoWay}" />
-                            <RadioButton Margin="20,0,20,0" Content="Monthly"
-                                 GroupName="Frequency"
-                                 IsChecked="{Binding IsMonthly, Mode=TwoWay}" />
-                        </HorizontalStackLayout>
-
                         <!-- Slider -->
                         <VerticalStackLayout IsVisible="{Binding IsWeeklyOrMonthly}" Spacing="5">
                             <Label Text="{Binding FrequencyLabel}" FontAttributes="Bold" />
@@ -70,7 +86,7 @@
                     </VerticalStackLayout>
 
                     <Button
-                        Text="Add"
+                        Text="Add" Margin="0,5,0,0"
                         Command="{Binding AddHabbitCommand}"
                         CommandParameter="{Binding Source={x:Reference HabbitEntry}, Path=Text}" >
                         <Button.ImageSource>
@@ -114,7 +130,7 @@
                                 Margin="12"
                                 Padding="8">
                             <VerticalStackLayout Spacing="8" Margin="2">
-                                
+
                                 <HorizontalStackLayout>
                                     <Border Stroke="#CCCCCC" HorizontalOptions="Center" VerticalOptions="Center"
                                         StrokeThickness="2"
@@ -142,6 +158,8 @@
                                         <Label Text="{Binding LastCompletedDate, StringFormat='Last Completed: {0:MMM dd, yyyy HH:mm}'}"
                                                FontSize="10" Margin="20,0,0,0"
                                                TextColor="NavajoWhite" />
+                                        <Label Text="{Binding Icon}"
+                                               FontSize="10" Margin="20,0,0,0" />
                                     </VerticalStackLayout>
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>

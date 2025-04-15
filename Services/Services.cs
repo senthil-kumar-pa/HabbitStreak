@@ -10,6 +10,7 @@ namespace HabbitStreak.Services
         public static HabbitService Instance => _instance.Value;
 
         private readonly string _filePath;
+        private List<Habbit>? _cachedHabbits;
 
         private HabbitService()
         {
@@ -18,11 +19,15 @@ namespace HabbitStreak.Services
 
         public async Task<List<Habbit>> LoadHabbitsAsync()
         {
+            if (_cachedHabbits != null)
+                return _cachedHabbits;
+
             if (!File.Exists(_filePath))
                 return new List<Habbit>();
 
             string json = await File.ReadAllTextAsync(_filePath);
-            return JsonSerializer.Deserialize<List<Habbit>>(json) ?? new List<Habbit>();
+            _cachedHabbits = JsonSerializer.Deserialize<List<Habbit>>(json) ?? new List<Habbit>();
+            return _cachedHabbits;
         }
 
         public async Task SaveHabbitsAsync(List<Habbit> habbits)
@@ -33,6 +38,9 @@ namespace HabbitStreak.Services
             };
             string json = JsonSerializer.Serialize(habbits, options);
             await File.WriteAllTextAsync(_filePath, json);
+
+            // Invalidate cache
+            _cachedHabbits = null;
         }
 
         public async Task UpdateHabbitAsync(Habbit updatedHabbit)
